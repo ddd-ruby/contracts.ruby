@@ -12,4 +12,5 @@ group :development do
   gem "method_profiler"
   gem "ruby-prof"
   gem "rake"
+  gem "byebug"
 end
