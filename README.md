@@ -1,12 +1,15 @@
 # contracts.ruby [![Build Status](https://travis-ci.org/ddd-ruby/contracts.ruby.png?branch=master)](https://travis-ci.org/ddd-ruby/contracts.ruby) [![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/egonSchiele/contracts.ruby)
 
+
+## Fork of https://github.com/egonSchiele/contracts.ruby
+
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
 
 You can think of contracts as `assert` on steroids.
 
 ## Installation
 
-    gem install contracts
+    gem install contracts-lite
 
 ## Hello World
 
@@ -69,7 +72,7 @@ To get started do the following:
 
 2. Run our test suite
 
-  `bundle exec rake`
+  `bundle exec rspec`
 
 ## Performance
 
