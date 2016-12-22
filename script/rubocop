@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+echo "running rubocop..."
+bundle exec rubocop -D spec/ lib/

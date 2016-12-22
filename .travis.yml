@@ -13,7 +13,7 @@ before_install:
 
 script:
   - bundle exec rspec
-  - ruby script/rubocop.rb
+  - script/rubocop
 
 bundler_args: --without development
 
