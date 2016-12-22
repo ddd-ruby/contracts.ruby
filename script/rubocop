@@ -1,3 +1,7 @@
-#!/usr/bin/env bash
-echo "running rubocop..."
-bundle exec rubocop -D spec/ lib/
+#!/usr/bin/env ruby
+
+if RUBY_VERSION.to_f > 2.1
+  puts "running rubocop..."
+  puts `bundle exec rubocop -D spec/ lib/`
+  exit $?.exitstatus
+end
