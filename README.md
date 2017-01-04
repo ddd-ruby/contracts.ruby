@@ -2,6 +2,9 @@
 
 
 ## Fork of https://github.com/egonSchiele/contracts.ruby
+Until this issue https://github.com/egonSchiele/contracts.ruby/pull/246 is resolved, we decided to mainain our own fork of contracts named `contracts-lite`.
+
+<hr>
 
 Contracts let you clearly – even beautifully – express how your code behaves, and free you from writing tons of boilerplate, defensive code.
 
