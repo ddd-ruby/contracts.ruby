@@ -8,7 +8,6 @@ group :test do
 end
 
 group :development do
-  gem "relish"
   gem "method_profiler"
   gem "ruby-prof"
   gem "rake"
