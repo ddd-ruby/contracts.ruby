@@ -145,7 +145,7 @@ class Contract < Contracts::Decorator
   end
 
   def use_penultimate_contract?(args)
-    @has_proc_contract && kinda_hash?(args_contracts[-2]) && !args[-2].is_a?(Hash)
+    kinda_hash?(args_contracts[-2]) && !args[-2].is_a?(Hash)
   end
 
   def use_last_contract?(args)
