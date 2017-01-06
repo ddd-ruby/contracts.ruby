@@ -1,3 +1,5 @@
+require "set"
+require "contracts/formatters"
 require "contracts/builtin_contracts"
 require "contracts/decorators"
 require "contracts/errors"

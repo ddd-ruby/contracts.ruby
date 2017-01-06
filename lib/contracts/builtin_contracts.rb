@@ -1,7 +1,3 @@
-require "contracts/formatters"
-require "set"
-
-# rdoc
 # This module contains all the builtin contracts.
 # If you want to use them, first:
 #
