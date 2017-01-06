@@ -44,18 +44,18 @@ module Contracts
 
     private
 
+    def private?(this)
+      this.private_instance_methods.include?(name)
+    end
+
+    def protected?(this)
+      this.protected_instance_methods.include?(name)
+    end
+
     # Makes a method private
     def make_private(this)
       original_name = name
       alias_target(this).class_eval { private original_name }
-    end
-
-    def private?(this)
-      this.private_instance_methods.map(&:to_sym).include?(name)
-    end
-
-    def protected?(this)
-      this.protected_instance_methods.map(&:to_sym).include?(name)
     end
 
     # Makes a method protected
@@ -84,11 +84,11 @@ module Contracts
     private
 
     def private?(this)
-      this.private_methods.map(&:to_sym).include?(name)
+      this.private_methods.include?(name)
     end
 
     def protected?(this)
-      this.protected_methods.map(&:to_sym).include?(name)
+      this.protected_methods.include?(name)
     end
 
     # Return alias target for singleton methods.
