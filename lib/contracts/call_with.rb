@@ -11,19 +11,21 @@ module Contracts
 
       # Loop forward validating the arguments up to the splat (if there is one)
       (@args_contract_index || args.size).times do |i|
-        contract = args_contracts[i]
-        arg = args[i]
+        contract  = args_contracts[i]
+        arg       = args[i]
         validator = @args_validators[i]
 
         unless validator && validator[arg]
-          return unless Contract.failure_callback(:arg => arg,
-                                                  :contract => contract,
-                                                  :class => klass,
-                                                  :method => method,
-                                                  :contracts => self,
-                                                  :arg_pos => i+1,
-                                                  :total_args => args.size,
-                                                  :return_value => false)
+          return unless Contract.failure_callback(
+            :arg          => arg,
+            :contract     => contract,
+            :class        => klass,
+            :method       => method,
+            :contracts    => self,
+            :arg_pos      => i+1,
+            :total_args   => args.size,
+            :return_value => false
+          )
         end
 
         if contract.is_a?(Contracts::Func)
@@ -49,14 +51,16 @@ module Contracts
           validator = @args_validators[args_contracts.size - 1 - j]
 
           unless validator && validator[arg]
-            return unless Contract.failure_callback(:arg => arg,
-                                                    :contract => contract,
-                                                    :class => klass,
-                                                    :method => method,
-                                                    :contracts => self,
-                                                    :arg_pos => i-1,
-                                                    :total_args => args.size,
-                                                    :return_value => false)
+            return unless Contract.failure_callback(
+              :arg          => arg,
+              :contract     => contract,
+              :class        => klass,
+              :method       => method,
+              :contracts    => self,
+              :arg_pos      => i-1,
+              :total_args   => args.size,
+              :return_value => false
+            )
           end
 
           if contract.is_a?(Contracts::Func)
@@ -77,12 +81,14 @@ module Contracts
                end
 
       unless @ret_validator[result]
-        Contract.failure_callback(:arg => result,
-                                  :contract => ret_contract,
-                                  :class => klass,
-                                  :method => method,
-                                  :contracts => self,
-                                  :return_value => true)
+        Contract.failure_callback(
+          :arg          => result,
+          :contract     => ret_contract,
+          :class        => klass,
+          :method       => method,
+          :contracts    => self,
+          :return_value => true
+        )
       end
 
       this.verify_invariants!(method) if this.respond_to?(:verify_invariants!)
