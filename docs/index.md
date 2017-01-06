@@ -1,4 +1,8 @@
-# contracts.ruby [![Build Status](https://travis-ci.org/ddd-ruby/contracts.ruby.png?branch=master)](https://travis-ci.org/ddd-ruby/contracts.ruby) [![Join the chat at https://gitter.im/egonSchiele/contracts.ruby](https://img.shields.io/badge/gitter-join%20chat-brightgreen.svg)](https://gitter.im/egonSchiele/contracts.ruby)
+# contracts.ruby
+[![Build Status](https://travis-ci.org/ddd-ruby/contracts.ruby.png)](https://travis-ci.org/ddd-ruby/contracts.ruby)
+[![Code Climate](https://codeclimate.com/github/ddd-ruby/contracts.ruby/badges/gpa.svg)](https://codeclimate.com/github/ddd-ruby/contracts.ruby)
+[![codecov](https://codecov.io/gh/ddd-ruby/contracts.ruby/branch/master/graph/badge.svg)](https://codecov.io/gh/ddd-ruby/contracts.ruby)
+[![Dependency Status](https://gemnasium.com/ddd-ruby/contracts.ruby.png)](https://gemnasium.com/ddd-ruby/contracts.ruby)
 
 
 ## Fork of https://github.com/egonSchiele/contracts.ruby
