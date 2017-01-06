@@ -7,11 +7,10 @@ module Contracts
     # name - name of the method
     # method - method object
     def initialize(name, method)
-      @name = name
+      @name   = name
       @method = method
     end
 
-    # Returns method_position, delegates to Support.method_position
     def method_position
       Support.method_position(@method)
     end

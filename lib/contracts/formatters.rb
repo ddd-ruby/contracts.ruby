@@ -42,18 +42,19 @@ module Contracts
       # InspectWrapper is a factory, will never be an instance
       # @return [ClassInspectWrapper, ObjectInspectWrapper]
       def self.create(value, full = true)
-        if value.class == Class
-          ClassInspectWrapper
-        else
-          ObjectInspectWrapper
-        end.new(value, full)
+        inspector_klass(value).new(value, full)
+      end
+
+      def self.inspector_klass(value)
+        return ClassInspectWrapper if value.class == Class
+        ObjectInspectWrapper
       end
 
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
       def initialize(value, full)
         @value = value
-        @full = full
+        @full  = full
       end
 
       # Inspect different types of contract values.
@@ -91,13 +92,12 @@ module Contracts
           (!plain? && useful_to_s?)
       end
 
+      # Not a type of contract that can have a custom to_s defined
       def plain?
-        # Not a type of contract that can have a custom to_s defined
         !@value.is_a?(Builtin::CallableClass) && @value.class != Class
       end
 
       def useful_to_s?
-        # Useless to_s value or no custom to_s behavious defined
         !empty_to_s? && custom_to_s?
       end
 

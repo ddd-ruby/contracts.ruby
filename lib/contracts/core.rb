@@ -14,11 +14,8 @@ module Contracts
       base.instance_eval do
         def functype(funcname)
           contracts = Engine.fetch_from(self).decorated_methods_for(:class_methods, funcname)
-          if contracts.nil?
-            "No contract for #{self}.#{funcname}"
-          else
-            "#{funcname} :: #{contracts[0]}"
-          end
+          return "No contract for #{self}.#{funcname}" if contracts.nil?
+          "#{funcname} :: #{contracts[0]}"
         end
       end
 
@@ -40,11 +37,8 @@ module Contracts
       base.class_eval do
         def functype(funcname)
           contracts = Engine.fetch_from(self.class).decorated_methods_for(:instance_methods, funcname)
-          if contracts.nil?
-            "No contract for #{self.class}.#{funcname}"
-          else
-            "#{funcname} :: #{contracts[0]}"
-          end
+          return "No contract for #{self.class}.#{funcname}" if contracts.nil?
+          "#{funcname} :: #{contracts[0]}"
         end
       end
     end
