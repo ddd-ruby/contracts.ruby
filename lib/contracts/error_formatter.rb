@@ -55,7 +55,7 @@ module Contracts
   class KeywordArgsErrorFormatter < DefaultErrorFormatter
     def message
       s = []
-      s << "#{header}"
+      s << header.to_s
       s << "        Expected: #{expected}"
       s << "        Actual: #{data[:arg].inspect}"
       s << "        Missing Contract: #{missing_contract_info}" unless missing_contract_info.empty?

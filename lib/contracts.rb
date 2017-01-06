@@ -43,10 +43,10 @@ class Contract < Contracts::Decorator
   DEFAULT_FAILURE_CALLBACK = proc do |data|
     if data[:return_value]
       # this failed on the return contract
-      fail ReturnContractError.new(failure_msg(data), data)
+      raise ReturnContractError.new(failure_msg(data), data)
     else
       # this failed for a param contract
-      fail data[:contracts].failure_exception.new(failure_msg(data), data)
+      raise data[:contracts].failure_exception.new(failure_msg(data), data)
     end
   end
 
@@ -54,7 +54,7 @@ class Contract < Contracts::Decorator
   def initialize(klass, method, *contracts)
     unless contracts.last.is_a?(Hash)
       unless contracts.one?
-        fail %{
+        raise %{
           It looks like your contract for #{method.name} doesn't have a return
           value. A contract should be written as `Contract arg1, arg2 =>
           return_value`.
@@ -99,7 +99,8 @@ class Contract < Contracts::Decorator
                             end
     # ===
 
-    @klass, @method = klass, method
+    @klass = klass
+    @method = method
   end
 
   def pretty_contract c
@@ -109,7 +110,7 @@ class Contract < Contracts::Decorator
   def to_s
     args = args_contracts.map { |c| pretty_contract(c) }.join(", ")
     ret = pretty_contract(ret_contract)
-    ("#{args} => #{ret}").gsub("Contracts::Builtin::", "")
+    "#{args} => #{ret}".gsub("Contracts::Builtin::", "")
   end
 
   # Given a hash, prints out a failure message.

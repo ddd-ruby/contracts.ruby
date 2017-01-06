@@ -36,7 +36,9 @@ module Contracts
 
     class Invariant
       def initialize(klass, name, &condition)
-        @klass, @name, @condition = klass, name, condition
+        @klass = klass
+        @name = name
+        @condition = condition
       end
 
       def expected
@@ -53,7 +55,7 @@ module Contracts
       end
 
       def self.failure_callback(data)
-        fail InvariantError, failure_msg(data)
+        raise InvariantError, failure_msg(data)
       end
 
       def self.failure_msg(data)

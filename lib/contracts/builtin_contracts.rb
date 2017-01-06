@@ -101,7 +101,7 @@ module Contracts
 
       def valid?(val)
         @vals.any? do |contract|
-          res, _ = Contract.valid?(val, contract)
+          res, = Contract.valid?(val, contract)
           res
         end
       end
@@ -123,7 +123,7 @@ module Contracts
 
       def valid?(val)
         results = @vals.map do |contract|
-          res, _ = Contract.valid?(val, contract)
+          res,  = Contract.valid?(val, contract)
           res
         end
         results.count(true) == 1
@@ -146,7 +146,7 @@ module Contracts
 
       def valid?(val)
         @vals.all? do |contract|
-          res, _ = Contract.valid?(val, contract)
+          res, = Contract.valid?(val, contract)
           res
         end
       end
@@ -257,7 +257,7 @@ module Contracts
 
       def valid?(val)
         @vals.all? do |contract|
-          res, _ = Contract.valid?(val, contract)
+          res, = Contract.valid?(val, contract)
           !res
         end
       end
@@ -282,7 +282,7 @@ module Contracts
       def valid?(vals)
         return false unless vals.is_a?(@collection_class)
         vals.all? do |val|
-          res, _ = Contract.valid?(val, @contract)
+          res, = Contract.valid?(val, @contract)
           res
         end
       end
@@ -302,7 +302,7 @@ module Contracts
           CollectionOf.new(@collection_class, contract)
         end
 
-        alias_method :[], :new
+        alias [] new
       end
     end
 
@@ -361,7 +361,7 @@ module Contracts
     # one for hash keys and one for hash values.
     # Example: <tt>HashOf[Symbol, String]</tt>
     class HashOf < CallableClass
-      INVALID_KEY_VALUE_PAIR = "You should provide only one key-value pair to HashOf contract"
+      INVALID_KEY_VALUE_PAIR = "You should provide only one key-value pair to HashOf contract".freeze
 
       def initialize(key, value = nil)
         if value
@@ -389,7 +389,7 @@ module Contracts
       private
 
       def validate_hash(hash)
-        fail ArgumentError, INVALID_KEY_VALUE_PAIR unless hash.count == 1
+        raise ArgumentError, INVALID_KEY_VALUE_PAIR unless hash.count == 1
       end
     end
 
@@ -468,7 +468,7 @@ module Contracts
     # Example: <tt>Optional[Num]</tt>
     class Optional < CallableClass
       UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH =
-        "Unable to use Optional contract outside of KeywordArgs contract"
+        "Unable to use Optional contract outside of KeywordArgs contract".freeze
 
       def self._valid?(hash, key, contract)
         return Contract.valid?(hash[key], contract) unless contract.is_a?(Optional)
@@ -505,7 +505,7 @@ module Contracts
 
       def ensure_within_opt_hash
         return if within_opt_hash
-        fail ArgumentError, UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH
+        raise ArgumentError, UNABLE_TO_USE_OUTSIDE_OF_OPT_HASH
       end
 
       def formatted_contract

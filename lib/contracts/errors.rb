@@ -59,10 +59,10 @@ module Contracts
         # you can use `Contract` definition here now
       end
     end
-    ```}
+    ```}.freeze
 
     attr_reader :message
-    alias_method :to_s, :message
+    alias to_s message
 
     def initialize(message = DEFAULT_MESSAGE)
       @message = message

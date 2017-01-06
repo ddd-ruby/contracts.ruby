@@ -27,8 +27,7 @@ module Contracts
       end
 
       # No-op for eigenclasses
-      def set_eigenclass_owner
-      end
+      def set_eigenclass_owner; end
 
       # Fetches just eigenclasses decorators
       def all_decorators
@@ -39,7 +38,7 @@ module Contracts
 
       # Fails when contracts are not included in owner class
       def validate!
-        fail ContractsNotIncluded unless owner?
+        raise ContractsNotIncluded unless owner?
       end
 
       def owner?

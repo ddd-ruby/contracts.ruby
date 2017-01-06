@@ -109,8 +109,7 @@ module Contracts
       end
 
       # No-op because it is safe to add decorators to normal classes
-      def validate!
-      end
+      def validate!; end
 
       def pop_decorators
         decorators.tap { clear_decorators }

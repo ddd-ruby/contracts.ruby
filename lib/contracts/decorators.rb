@@ -25,7 +25,7 @@ module Contracts
     class << self; attr_accessor :decorators; end
 
     def self.inherited(klass)
-      name = klass.name.gsub(/^./) { |m| m.downcase }
+      name = klass.name.gsub(/^./, &:downcase)
 
       return if name =~ /^[^A-Za-z_]/ || name =~ /[^0-9A-Za-z_]/
 

@@ -6,7 +6,8 @@ module Contracts
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
       def initialize(contract, full = true)
-        @contract, @full = contract, full
+        @contract = contract
+        @full = full
       end
 
       # Formats any type of Contract.
@@ -51,7 +52,8 @@ module Contracts
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
       def initialize(value, full)
-        @value, @full = value, full
+        @value = value
+        @full = full
       end
 
       # Inspect different types of contract values.
@@ -68,7 +70,7 @@ module Contracts
       end
 
       def delim(value)
-        @full ? "(#{value})" : "#{value}"
+        @full ? "(#{value})" : value.to_s
       end
 
       # Eliminates eronious quotes in output that plain inspect includes.
