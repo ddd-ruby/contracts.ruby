@@ -46,8 +46,8 @@ module Contracts
           end
 
           # Each arg after the spat is found must use the splat validator
-          j = i < splat_upper_index ? i : splat_upper_index
-          contract = args_contracts[args_contracts.size - 1 - j]
+          j         = i < splat_upper_index ? i : splat_upper_index
+          contract  = args_contracts[args_contracts.size - 1 - j]
           validator = @args_validators[args_contracts.size - 1 - j]
 
           unless validator && validator[arg]

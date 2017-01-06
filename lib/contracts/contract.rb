@@ -197,6 +197,6 @@ class Contract < Contracts::Decorator
 
   # Used to determine if contract is a pattern matching contract
   def pattern_match?
-    @pattern_match == true
+    @pattern_match
   end
 end
