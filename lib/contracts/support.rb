@@ -3,17 +3,8 @@ module Contracts
     class << self
       def method_position(method)
         return method.method_position if method.is_a?(MethodReference)
-
-        if RUBY_VERSION =~ /^1\.8/
-          if method.respond_to?(:__file__)
-            method.__file__ + ":" + method.__line__.to_s
-          else
-            method.inspect
-          end
-        else
-          file, line = method.source_location
-          file + ":" + line.to_s
-        end
+        file, line = method.source_location
+        "#{file}:#{line}"
       end
 
       def method_name(method)
