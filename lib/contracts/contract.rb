@@ -22,16 +22,7 @@ class Contract < Contracts::Decorator
 
   attr_reader :args_contracts, :ret_contract, :klass, :method
   def initialize(klass, method, *contracts)
-    unless contracts.last.is_a?(Hash)
-      unless contracts.one?
-        raise %{
-          It looks like your contract for #{method.name} doesn't have a return
-          value. A contract should be written as `Contract arg1, arg2 =>
-          return_value`.
-        }.strip
-      end
-      contracts = [nil => contracts[-1]]
-    end
+    contracts = correct_contracts(contracts, method)
 
     # internally we just convert that return value syntax back to an array
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
@@ -97,6 +88,20 @@ class Contract < Contracts::Decorator
   end
 
   private
+
+  def correct_contracts(contracts, method)
+    unless contracts.last.is_a?(Hash)
+      unless contracts.one?
+        raise %{
+          It looks like your contract for #{method.name} doesn't have a return
+          value. A contract should be written as `Contract arg1, arg2 =>
+          return_value`.
+        }.strip
+      end
+      contracts = [nil => contracts[-1]]
+    end
+    contracts
+  end
 
   def args_contracts_to_s
     args_contracts.map { |c| pretty_contract(c) }.join(", ")
