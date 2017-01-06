@@ -27,3 +27,4 @@ ratings:
 exclude_paths:
 - spec/**/*
 - benchmarks/**/*
+- .rubocop.yml
