@@ -13,6 +13,17 @@ RSpec.describe "Contracts:" do
     it "should fail for insufficient contracts" do
       expect { @o.bad_double(2) }.to raise_error(ContractError)
     end
+
+    it "requires last argument to be a hash for more than one contracts" do
+      expect{
+        Class.new(GenericExample) do
+          Contract C::Num, C::Num
+          def no_args_bad_contract(num)
+            1
+          end
+        end
+      }.to raise_error(RuntimeError, Regexp.new("A contract should be written as"))
+    end
   end
 
   describe "contracts for functions with no arguments" do
