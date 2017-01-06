@@ -21,7 +21,6 @@ engines:
 
 ratings:
   paths:
-  - Gemfile.lock
   - "**.rb"
 
 exclude_paths:
