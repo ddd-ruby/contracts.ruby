@@ -14,6 +14,7 @@ require "contracts/core"
 
 require "contracts/contract/call_with"
 require "contracts/contract/validators"
+require "contracts/contract/failure_callback"
 require "contracts/contract"
 
 module Contracts

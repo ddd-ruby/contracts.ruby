@@ -12,69 +12,7 @@
 class Contract < Contracts::Decorator
   extend Contracts::Validators
   include Contracts::CallWith
-
-  # Default implementation of failure_callback. Provided as a block to be able
-  # to monkey patch #failure_callback only temporary and then switch it back.
-  # First important usage - for specs.
-  DEFAULT_FAILURE_CALLBACK = proc do |data|
-    # this failed on the return contract
-    raise ReturnContractError.new(failure_msg(data), data) if data[:return_value]
-
-    # this failed for a param contract
-    raise data[:contracts].failure_exception.new(failure_msg(data), data)
-  end
-
-  # Given a hash, prints out a failure message.
-  # This function is used by the default #failure_callback method
-  # and uses the hash passed into the failure_callback method.
-  def self.failure_msg(data)
-    Contracts::ErrorFormatters.failure_msg(data)
-  end
-
-  # Callback for when a contract fails. By default it raises
-  # an error and prints detailed info about the contract that
-  # failed. You can also monkeypatch this callback to do whatever
-  # you want...log the error, send you an email, print an error
-  # message, etc.
-  #
-  # Example of monkeypatching:
-  #
-  #   def Contract.failure_callback(data)
-  #     puts "You had an error!"
-  #     puts failure_msg(data)
-  #     exit
-  #   end
-  def self.failure_callback(data, use_pattern_matching = true)
-    if data[:contracts].pattern_match? && use_pattern_matching
-      return DEFAULT_FAILURE_CALLBACK.call(data)
-    end
-
-    fetch_failure_callback.call(data)
-  end
-
-  # Used to override failure_callback without monkeypatching.
-  #
-  # Takes: block parameter, that should accept one argument - data.
-  #
-  # Example usage:
-  #
-  #   Contract.override_failure_callback do |data|
-  #     puts "You had an error"
-  #     puts failure_msg(data)
-  #     exit
-  #   end
-  def self.override_failure_callback(&blk)
-    @failure_callback = blk
-  end
-
-  # Used to restore default failure callback
-  def self.restore_failure_callback
-    @failure_callback = DEFAULT_FAILURE_CALLBACK
-  end
-
-  def self.fetch_failure_callback
-    @failure_callback ||= DEFAULT_FAILURE_CALLBACK
-  end
+  extend Contracts::FailureCallback
 
   # Used to verify if an argument satisfies a contract.
   #

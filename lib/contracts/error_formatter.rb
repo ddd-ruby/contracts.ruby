@@ -1,5 +1,9 @@
 module Contracts
   class ErrorFormatters
+
+    # # Given a hash, prints out a failure message.
+    # # This function is used by the default #failure_callback method
+    # # and uses the hash passed into the failure_callback method.
     def self.failure_msg(data)
       class_for(data).new(data).message
     end
