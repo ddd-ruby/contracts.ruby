@@ -118,7 +118,6 @@ module Contracts
 
         # Fetch decorated methods out of the contracts engine
         decorated_methods = engine.decorated_methods_for(method_type, name)
-
         # This adds support for overloading methods. Here we go
         # through each method and call it with the arguments.
         # If we get a failure_exception, we move to the next
@@ -132,12 +131,13 @@ module Contracts
 
         until success
           decorated_method = decorated_methods[i]
-          i += 1
+
           begin
             success = true
             result  = decorated_method.call_with(self, *args, &blk)
           rescue expected_error => error
             success = false
+            i += 1
             unless decorated_methods[i]
               begin
                 ::Contract.failure_callback(error.data, false)
