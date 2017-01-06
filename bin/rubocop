@@ -2,6 +2,5 @@
 
 if RUBY_VERSION.to_f > 2.1
   puts "running rubocop..."
-  puts `bundle exec rubocop -D spec/ lib/`
-  exit $?.exitstatus
+  exec("bundle exec rubocop -D lib/")
 end
