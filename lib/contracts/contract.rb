@@ -157,9 +157,9 @@ class Contract < Contracts::Decorator
   end
 
   def kinda_proc?(v)
-    is_a_proc          = v.is_a?(Class) && (v <= Proc || v <= Method)
-    maybe_a_proc       = v.is_a?(Contracts::Maybe) && v.include_proc?
-    is_func_contract   = v.is_a?(Contracts::Func)
+    is_a_proc        = v.is_a?(Class) && (v <= Proc || v <= Method)
+    maybe_a_proc     = v.is_a?(Contracts::Maybe) && v.include_proc?
+    is_func_contract = v.is_a?(Contracts::Func)
 
     (is_a_proc || maybe_a_proc || is_func_contract)
   end
