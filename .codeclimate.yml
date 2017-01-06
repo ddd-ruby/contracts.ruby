@@ -4,7 +4,7 @@ engines:
     exclude_fingerprints:
 
   bundler-audit:
-    enabled: true
+    enabled: false
 
   fixme:
     enabled: true
