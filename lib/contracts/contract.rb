@@ -96,9 +96,7 @@ class Contract < Contracts::Decorator
   end
 
   def set_has_options_contract!(args_contracts)
-    last_contract         = args_contracts.last
-    penultimate_contract  = args_contracts[-2]
-    relevant_contract     = (@has_proc_contract ? penultimate_contract : last_contract)
+    relevant_contract     = (@has_proc_contract ? args_contracts[-2] : args_contracts[-1])
     @has_options_contract = kinda_hash?(relevant_contract)
   end
 
