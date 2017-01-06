@@ -39,21 +39,9 @@ class Contract < Contracts::Decorator
     @ret_validator = Contract.make_validator(ret_contract)
     @pattern_match = false
 
-    # == @has_proc_contract
-    last_contract      = args_contracts.last
-    is_a_proc          = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
-    maybe_a_proc       = last_contract.is_a?(Contracts::Maybe) && last_contract.include_proc?
-    @has_proc_contract = is_a_proc || maybe_a_proc || last_contract.is_a?(Contracts::Func)
+    set_has_proc_contract!(args_contracts)
+    set_has_options_contract!(args_contracts)
 
-    # ====
-
-    # == @has_options_contract
-    last_contract         = args_contracts.last
-    penultimate_contract  = args_contracts[-2]
-    relevant_contract     = (@has_proc_contract ? penultimate_contract : last_contract)
-    @has_options_contract = relevant_contract.is_a?(Hash) || relevant_contract.is_a?(Contracts::Builtin::KeywordArgs)
-
-    # ===
 
     @klass  = klass
     @method = method
@@ -102,6 +90,18 @@ class Contract < Contracts::Decorator
     end
     contracts
   end
+
+  def set_has_proc_contract!(args_contracts)
+    @has_proc_contract = kinda_proc?(args_contracts.last)
+  end
+
+  def set_has_options_contract!(args_contracts)
+    last_contract         = args_contracts.last
+    penultimate_contract  = args_contracts[-2]
+    relevant_contract     = (@has_proc_contract ? penultimate_contract : last_contract)
+    @has_options_contract = kinda_hash?(relevant_contract)
+  end
+
 
   def args_contracts_to_s
     args_contracts.map { |c| pretty_contract(c) }.join(", ")
@@ -152,5 +152,13 @@ class Contract < Contracts::Decorator
 
   def kinda_hash?(v)
     v.is_a?(Hash) || v.is_a?(Contracts::Builtin::KeywordArgs)
+  end
+
+  def kinda_proc?(v)
+    is_a_proc          = v.is_a?(Class) && (v <= Proc || v <= Method)
+    maybe_a_proc       = v.is_a?(Contracts::Maybe) && v.include_proc?
+    is_func_contract   = v.is_a?(Contracts::Func)
+
+    (is_a_proc || maybe_a_proc || is_func_contract)
   end
 end
