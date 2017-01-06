@@ -118,40 +118,6 @@ class Contract < Contracts::Decorator
     c.class.name
   end
 
-  # if we specified a proc in the contract but didn't pass one in,
-  # it's possible we are going to pass in a block instead. So lets
-  # append a nil to the list of args just so it doesn't fail.
-
-  # a better way to handle this might be to take this into account
-  # before throwing a "mismatched # of args" error.
-  # returns true if it appended nil
-  def maybe_append_block!(args, blk)
-    return false unless @has_proc_contract && !blk &&
-        (args_contract_index || args.size < args_contracts.size)
-    args << nil
-    true
-  end
-
-  # Same thing for when we have named params but didn't pass any in.
-  # returns true if it appended nil
-  def maybe_append_options!(args, blk)
-    return false unless @has_options_contract
-    if use_penultimate_contract?(args)
-      args.insert(-2, {})
-    elsif use_last_contract?(args)
-      args << {}
-    end
-    true
-  end
-
-  def use_penultimate_contract?(args)
-    kinda_hash?(args_contracts[-2]) && !args[-2].is_a?(Hash)
-  end
-
-  def use_last_contract?(args)
-    kinda_hash?(args_contracts[-1]) && !args[-1].is_a?(Hash)
-  end
-
   def kinda_hash?(v)
     v.is_a?(Hash) || v.is_a?(Contracts::Builtin::KeywordArgs)
   end
