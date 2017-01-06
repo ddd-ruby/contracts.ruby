@@ -88,12 +88,12 @@ module Contracts
       #
       # @return [Engine::Base or Engine::Eigenclass]
       def nearest_decorated_ancestor
-        current = klass
+        current        = klass
         current_engine = self
-        ancestors = current.ancestors[1..-1]
+        ancestors      = current.ancestors[1..-1]
 
         while current && current_engine && !current_engine.decorated_methods?
-          current = ancestors.shift
+          current        = ancestors.shift
           current_engine = Engine.fetch_from(current)
         end
 
@@ -109,8 +109,7 @@ module Contracts
       end
 
       # No-op because it is safe to add decorators to normal classes
-      def validate!
-      end
+      def validate!; end
 
       def pop_decorators
         decorators.tap { clear_decorators }

@@ -3,14 +3,14 @@ module Contracts
   # Represents single such method
   class MethodHandler
     METHOD_REFERENCE_FACTORY = {
-      :class_methods => SingletonMethodReference,
+      :class_methods    => SingletonMethodReference,
       :instance_methods => MethodReference
-    }
+    }.freeze
 
     RAW_METHOD_STRATEGY = {
-      :class_methods => lambda { |target, name| target.method(name) },
+      :class_methods    => lambda { |target, name| target.method(name) },
       :instance_methods => lambda { |target, name| target.instance_method(name) }
-    }
+    }.freeze
 
     # Creates new instance of MethodHandler
     #
@@ -18,9 +18,9 @@ module Contracts
     # @param [Bool] is_class_method
     # @param [Class] target - class that method got added to
     def initialize(method_name, is_class_method, target)
-      @method_name = method_name
+      @method_name     = method_name
       @is_class_method = is_class_method
-      @target = target
+      @target          = target
     end
 
     # Handles method addition
@@ -58,7 +58,7 @@ module Contracts
     end
     # _method_type is required for assigning it to local variable with
     # the same name. See: #redefine_method
-    alias_method :_method_type, :method_type
+    alias _method_type method_type
 
     def method_reference
       @_method_reference ||= METHOD_REFERENCE_FACTORY[method_type].new(method_name, raw_method)
@@ -102,8 +102,8 @@ module Contracts
       return if ignore_decorators?
 
       # Those are required for instance_eval to be able to refer them
-      name = method_name
-      method_type = _method_type
+      name           = method_name
+      method_type    = _method_type
       current_engine = engine
 
       # We are gonna redefine original method here
@@ -113,12 +113,11 @@ module Contracts
         # If we weren't able to find any ancestor that has decorated methods
         # FIXME : this looks like untested code (commenting it out doesn't make specs red)
         unless engine
-          fail "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
         end
 
         # Fetch decorated methods out of the contracts engine
         decorated_methods = engine.decorated_methods_for(method_type, name)
-
         # This adds support for overloading methods. Here we go
         # through each method and call it with the arguments.
         # If we get a failure_exception, we move to the next
@@ -126,18 +125,19 @@ module Contracts
         # If we run out of functions, we raise the last error, but
         # convert it to_contract_error.
         success = false
-        i = 0
-        result = nil
+        i       = 0
+        result  = nil
         expected_error = decorated_methods[0].failure_exception
 
         until success
           decorated_method = decorated_methods[i]
-          i += 1
+
           begin
             success = true
-            result = decorated_method.call_with(self, *args, &blk)
+            result  = decorated_method.call_with(self, *args, &blk)
           rescue expected_error => error
             success = false
+            i += 1
             unless decorated_methods[i]
               begin
                 ::Contract.failure_callback(error.data, false)
@@ -156,7 +156,7 @@ module Contracts
     def validate_decorators!
       return if decorators.size == 1
 
-      fail %{
+      raise %{
 Oops, it looks like method '#{name}' has multiple contracts:
 #{decorators.map { |x| x[1][0].inspect }.join("\n")}
 
@@ -181,7 +181,7 @@ https://github.com/egonSchiele/contracts.ruby/issues
 
       return if matched.empty?
 
-      fail ContractError.new(%{
+      raise ContractError.new(%{
 It looks like you are trying to use pattern-matching, but
 multiple definitions for function '#{method_name}' have the same
 contract for input parameters:

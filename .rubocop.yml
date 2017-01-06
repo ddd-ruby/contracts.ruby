@@ -4,7 +4,7 @@ AllCops:
 
 # forces method defs to have params in parens
 Style/MethodDefParentheses:
-  Enabled: false
+  Enabled: true
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -60,7 +60,7 @@ Lint/ParenthesesAsGroupedExpression:
 # checks how much a method branches.
 # TODO try to get this cop enabled
 Metrics/AbcSize:
-  Enabled: false
+  Enabled: true
 
 # checks complexity of method
 # TODO try to get this cop enabled

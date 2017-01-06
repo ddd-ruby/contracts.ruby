@@ -6,18 +6,15 @@ module Contracts
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
       def initialize(contract, full = true)
-        @contract, @full = contract, full
+        @contract = contract
+        @full     = full
       end
 
       # Formats any type of Contract.
       def contract(contract = @contract)
-        if contract.is_a?(Hash)
-          hash_contract(contract)
-        elsif contract.is_a?(Array)
-          array_contract(contract)
-        else
-          InspectWrapper.create(contract, @full)
-        end
+        return hash_contract(contract)  if contract.is_a?(Hash)
+        return array_contract(contract) if contract.is_a?(Array)
+        InspectWrapper.create(contract, @full)
       end
 
       # Formats Hash contracts.
@@ -41,17 +38,19 @@ module Contracts
       # InspectWrapper is a factory, will never be an instance
       # @return [ClassInspectWrapper, ObjectInspectWrapper]
       def self.create(value, full = true)
-        if value.class == Class
-          ClassInspectWrapper
-        else
-          ObjectInspectWrapper
-        end.new(value, full)
+        inspector_klass(value).new(value, full)
+      end
+
+      def self.inspector_klass(value)
+        return ClassInspectWrapper if value.class == Class
+        ObjectInspectWrapper
       end
 
       # @param full [Boolean] if false only unique `to_s` values will be output,
       #   non unique values become empty string.
       def initialize(value, full)
-        @value, @full = value, full
+        @value = value
+        @full  = full
       end
 
       # Inspect different types of contract values.
@@ -61,17 +60,17 @@ module Contracts
       # Primitive values e.g. 42, true, nil will be left alone.
       def inspect
         return "" unless full?
-        return @value.inspect if empty_val?
-        return @value.to_s if plain?
+        return @value.inspect     if empty_val?
+        return @value.to_s        if plain?
         return delim(@value.to_s) if useful_to_s?
         useful_inspect
       end
 
       def delim(value)
-        @full ? "(#{value})" : "#{value}"
+        @full ? "(#{value})" : value.to_s
       end
 
-      # Eliminates eronious quotes in output that plain inspect includes.
+      # Eliminates erroneous quotes in output that plain inspect includes.
       def to_s
         inspect
       end
@@ -84,17 +83,17 @@ module Contracts
 
       def full?
         @full ||
-          @value.is_a?(Hash) || @value.is_a?(Array) ||
+          @value.is_a?(Hash) ||
+          @value.is_a?(Array) ||
           (!plain? && useful_to_s?)
       end
 
+      # Not a type of contract that can have a custom to_s defined
       def plain?
-        # Not a type of contract that can have a custom to_s defined
         !@value.is_a?(Builtin::CallableClass) && @value.class != Class
       end
 
       def useful_to_s?
-        # Useless to_s value or no custom to_s behavious defined
         !empty_to_s? && custom_to_s?
       end
 
