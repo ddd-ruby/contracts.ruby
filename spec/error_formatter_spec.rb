@@ -2,7 +2,6 @@ RSpec.describe "Contracts::ErrorFormatters" do
   before :all do
     @o = GenericExample.new
   end
-  C = Contracts::Builtin
 
   describe "self.class_for" do
     let(:keywordargs_contract) { C::KeywordArgs[:name => String, :age => Fixnum] }
