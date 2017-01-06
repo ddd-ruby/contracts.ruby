@@ -24,11 +24,6 @@ module Contracts
         contract.object_id
       end
 
-      def eigenclass_hierarchy_supported?
-        return false if RUBY_PLATFORM == "java" && RUBY_VERSION.to_f < 2.0
-        RUBY_VERSION.to_f > 1.8
-      end
-
       def eigenclass_of(target)
         class << target; self; end
       end
