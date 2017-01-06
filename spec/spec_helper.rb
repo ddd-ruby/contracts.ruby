@@ -1,4 +1,6 @@
-require "byebug"
+if RUBY_VERSION.to_f > 2.0
+  require "byebug"
+end
 
 require 'simplecov'
 SimpleCov.start do
