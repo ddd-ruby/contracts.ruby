@@ -60,7 +60,7 @@ Lint/ParenthesesAsGroupedExpression:
 # checks how much a method branches.
 # TODO try to get this cop enabled
 Metrics/AbcSize:
-  Enabled: false
+  Enabled: true
 
 # checks complexity of method
 # TODO try to get this cop enabled
