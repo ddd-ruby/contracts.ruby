@@ -41,13 +41,11 @@ class Contract < Contracts::Decorator
   # to monkey patch #failure_callback only temporary and then switch it back.
   # First important usage - for specs.
   DEFAULT_FAILURE_CALLBACK = proc do |data|
-    if data[:return_value]
-      # this failed on the return contract
-      raise ReturnContractError.new(failure_msg(data), data)
-    else
-      # this failed for a param contract
-      raise data[:contracts].failure_exception.new(failure_msg(data), data)
-    end
+    # this failed on the return contract
+    raise ReturnContractError.new(failure_msg(data), data) if data[:return_value]
+
+    # this failed for a param contract
+    raise data[:contracts].failure_exception.new(failure_msg(data), data)
   end
 
   attr_reader :args_contracts, :ret_contract, :klass, :method

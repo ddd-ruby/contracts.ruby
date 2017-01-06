@@ -84,20 +84,15 @@ module Contracts
     # don't have to go through this decision tree every time.
     # Seems silly but it saves us a bunch of time (4.3sec vs 5.2sec)
     def make_validator!(contract)
-      klass = contract.class
-      key = if validator_strategies.key?(klass)
-              klass
-            else
-              if contract.respond_to? :valid?
-                :valid
-              elsif klass == Class || klass == Module
-                :class
-              else
-                :default
-              end
-            end
+      validator_strategies[validator_key(contract)].call(contract)
+    end
 
-      validator_strategies[key].call(contract)
+    def validator_key(contract)
+      klass = contract.class
+      return klass  if validator_strategies.key?(klass)
+      return :valid if contract.respond_to? :valid?
+      return :class if klass == Class || klass == Module
+      :default
     end
 
     def make_validator(contract)
