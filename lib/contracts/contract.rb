@@ -42,7 +42,6 @@ class Contract < Contracts::Decorator
     set_has_proc_contract!(args_contracts)
     set_has_options_contract!(args_contracts)
 
-
     @klass  = klass
     @method = method
   end
@@ -99,7 +98,6 @@ class Contract < Contracts::Decorator
     relevant_contract     = (@has_proc_contract ? args_contracts[-2] : args_contracts[-1])
     @has_options_contract = kinda_hash?(relevant_contract)
   end
-
 
   def args_contracts_to_s
     args_contracts.map { |c| pretty_contract(c) }.join(", ")
