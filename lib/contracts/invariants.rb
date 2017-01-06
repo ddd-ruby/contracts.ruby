@@ -36,8 +36,8 @@ module Contracts
 
     class Invariant
       def initialize(klass, name, &condition)
-        @klass = klass
-        @name = name
+        @klass     = klass
+        @name      = name
         @condition = condition
       end
 
@@ -48,10 +48,12 @@ module Contracts
       def check_on(target, method)
         return if target.instance_eval(&@condition)
 
-        self.class.failure_callback(:expected => expected,
-                                    :actual => false,
-                                    :target => target,
-                                    :method => method)
+        self.class.failure_callback(
+          :expected => expected,
+          :actual   => false,
+          :target   => target,
+          :method   => method
+        )
       end
 
       def self.failure_callback(data)

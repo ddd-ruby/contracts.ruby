@@ -77,7 +77,7 @@ class Contract < Contracts::Decorator
     @method = method
   end
 
-  def pretty_contract c
+  def pretty_contract(c)
     c.is_a?(Class) ? c.name : c.class.name
   end
 
@@ -165,7 +165,7 @@ class Contract < Contracts::Decorator
   # a better way to handle this might be to take this into account
   # before throwing a "mismatched # of args" error.
   # returns true if it appended nil
-  def maybe_append_block! args, blk
+  def maybe_append_block!(args, blk)
     return false unless @has_proc_contract && !blk &&
         (@args_contract_index || args.size < args_contracts.size)
     args << nil
@@ -174,7 +174,7 @@ class Contract < Contracts::Decorator
 
   # Same thing for when we have named params but didn't pass any in.
   # returns true if it appended nil
-  def maybe_append_options! args, blk
+  def maybe_append_options!(args, blk)
     return false unless @has_options_contract
     if @has_proc_contract && (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
       args.insert(-2, {})

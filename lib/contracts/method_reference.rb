@@ -18,10 +18,10 @@ module Contracts
 
     # Makes a method re-definition in proper way
     def make_definition(this, &blk)
-      is_private = private?(this)
+      is_private   = private?(this)
       is_protected = protected?(this)
       alias_target(this).send(:define_method, name, &blk)
-      make_private(this) if is_private
+      make_private(this)   if is_private
       make_protected(this) if is_protected
     end
 

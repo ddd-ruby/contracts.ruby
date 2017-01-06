@@ -7,7 +7,7 @@ module Contracts
       #   non unique values become empty string.
       def initialize(contract, full = true)
         @contract = contract
-        @full = full
+        @full     = full
       end
 
       # Formats any type of Contract.
@@ -63,8 +63,8 @@ module Contracts
       # Primitive values e.g. 42, true, nil will be left alone.
       def inspect
         return "" unless full?
-        return @value.inspect if empty_val?
-        return @value.to_s if plain?
+        return @value.inspect     if empty_val?
+        return @value.to_s        if plain?
         return delim(@value.to_s) if useful_to_s?
         useful_inspect
       end
@@ -73,7 +73,7 @@ module Contracts
         @full ? "(#{value})" : value.to_s
       end
 
-      # Eliminates eronious quotes in output that plain inspect includes.
+      # Eliminates erroneous quotes in output that plain inspect includes.
       def to_s
         inspect
       end
@@ -86,7 +86,8 @@ module Contracts
 
       def full?
         @full ||
-          @value.is_a?(Hash) || @value.is_a?(Array) ||
+          @value.is_a?(Hash) ||
+          @value.is_a?(Array) ||
           (!plain? && useful_to_s?)
       end
 
