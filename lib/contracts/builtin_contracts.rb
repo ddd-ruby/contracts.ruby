@@ -87,6 +87,15 @@ module Contracts
       end
     end
 
+    class EnumInspector
+      include ::Contracts::Formatters
+      def self.inspect(vals, last_join_word)
+        vals[0, vals.size-1].map do |x|
+          InspectWrapper.create(x)
+        end.join(", ") + " #{last_join_word} " + InspectWrapper.create(vals[-1]).to_s
+      end
+    end
+
     # Takes a variable number of contracts.
     # The contract passes if any of the contracts pass.
     # Example: <tt>Or[Fixnum, Float]</tt>
@@ -103,9 +112,7 @@ module Contracts
       end
 
       def to_s
-        @vals[0, @vals.size-1].map do |x|
-          InspectWrapper.create(x)
-        end.join(", ") + " or " + InspectWrapper.create(@vals[-1]).to_s
+        EnumInspector.inspect(@vals, "or")
       end
     end
 
@@ -126,9 +133,7 @@ module Contracts
       end
 
       def to_s
-        @vals[0, @vals.size-1].map do |x|
-          InspectWrapper.create(x)
-        end.join(", ") + " xor " + InspectWrapper.create(@vals[-1]).to_s
+        EnumInspector.inspect(@vals, "xor")
       end
     end
 
@@ -148,9 +153,7 @@ module Contracts
       end
 
       def to_s
-        @vals[0, @vals.size-1].map do |x|
-          InspectWrapper.create(x)
-        end.join(", ") + " and " + InspectWrapper.create(@vals[-1]).to_s
+        EnumInspector.inspect(@vals, "and")
       end
     end
 
