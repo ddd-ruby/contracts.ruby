@@ -12,13 +12,9 @@ module Contracts
 
       # Formats any type of Contract.
       def contract(contract = @contract)
-        if contract.is_a?(Hash)
-          hash_contract(contract)
-        elsif contract.is_a?(Array)
-          array_contract(contract)
-        else
-          InspectWrapper.create(contract, @full)
-        end
+        return hash_contract(contract)  if contract.is_a?(Hash)
+        return array_contract(contract) if contract.is_a?(Array)
+        InspectWrapper.create(contract, @full)
       end
 
       # Formats Hash contracts.
