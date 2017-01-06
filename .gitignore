@@ -2,4 +2,5 @@
 *.swo
 .*
 Gemfile.lock
-tmp/aruba
+tmp/
+coverage/
