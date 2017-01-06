@@ -39,33 +39,30 @@ class Contract < Contracts::Decorator
 
     # internally we just convert that return value syntax back to an array
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
-
-    @ret_contract = contracts[-1].values[0]
+    @ret_contract   = contracts[-1].values[0]
 
     @args_validators = args_contracts.map do |contract|
       Contract.make_validator(contract)
     end
 
     @args_contract_index = args_contracts.index do |contract|
-      contract.is_a? Contracts::Args
+      contract.is_a?(Contracts::Args)
     end
 
     @ret_validator = Contract.make_validator(ret_contract)
-
     @pattern_match = false
 
     # == @has_proc_contract
-    last_contract = args_contracts.last
-    is_a_proc = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
-    maybe_a_proc = last_contract.is_a?(Contracts::Maybe) && last_contract.include_proc?
-
+    last_contract      = args_contracts.last
+    is_a_proc          = last_contract.is_a?(Class) && (last_contract <= Proc || last_contract <= Method)
+    maybe_a_proc       = last_contract.is_a?(Contracts::Maybe) && last_contract.include_proc?
     @has_proc_contract = is_a_proc || maybe_a_proc || last_contract.is_a?(Contracts::Func)
 
     # ====
 
     # == @has_options_contract
-    last_contract = args_contracts.last
-    penultimate_contract = args_contracts[-2]
+    last_contract         = args_contracts.last
+    penultimate_contract  = args_contracts[-2]
     @has_options_contract = if @has_proc_contract
                               penultimate_contract.is_a?(Hash) || penultimate_contract.is_a?(Contracts::Builtin::KeywordArgs)
                             else
@@ -73,17 +70,18 @@ class Contract < Contracts::Decorator
                             end
     # ===
 
-    @klass = klass
+    @klass  = klass
     @method = method
   end
 
   def pretty_contract(c)
-    c.is_a?(Class) ? c.name : c.class.name
+    return c.name if c.is_a?(Class)
+    c.class.name
   end
 
   def to_s
     args = args_contracts.map { |c| pretty_contract(c) }.join(", ")
-    ret = pretty_contract(ret_contract)
+    ret  = pretty_contract(ret_contract)
     "#{args} => #{ret}".gsub("Contracts::Builtin::", "")
   end
 
@@ -176,7 +174,8 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_options!(args, blk)
     return false unless @has_options_contract
-    if @has_proc_contract && (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
+    if @has_proc_contract &&
+      (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
     elsif (args_contracts[-1].is_a?(Hash) || args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-1].is_a?(Hash)
       args << {}
@@ -186,11 +185,8 @@ class Contract < Contracts::Decorator
 
   # Used to determine type of failure exception this contract should raise in case of failure
   def failure_exception
-    if pattern_match?
-      PatternMatchingError
-    else
-      ParamContractError
-    end
+    return PatternMatchingError if pattern_match?
+    ParamContractError
   end
 
   # @private
