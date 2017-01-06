@@ -10,10 +10,10 @@ module Contracts
       maybe_append_options!(args, blk)
 
       # Loop forward validating the arguments up to the splat (if there is one)
-      (@args_contract_index || args.size).times do |i|
+      (args_contract_index || args.size).times do |i|
         contract  = args_contracts[i]
         arg       = args[i]
-        validator = @args_validators[i]
+        validator = args_validators[i]
 
         unless validator && validator[arg]
           return unless Contract.failure_callback(
@@ -36,9 +36,9 @@ module Contracts
       # If there is a splat loop backwards to the lower index of the splat
       # Once we hit the splat in this direction set its upper index
       # Keep validating but use this upper index to get the splat validator.
-      if @args_contract_index
+      if args_contract_index
         splat_upper_index = @args_contract_index
-        (args.size - @args_contract_index).times do |i|
+        (args.size - args_contract_index).times do |i|
           arg = args[args.size - 1 - i]
 
           if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::Args)
@@ -48,7 +48,7 @@ module Contracts
           # Each arg after the spat is found must use the splat validator
           j         = i < splat_upper_index ? i : splat_upper_index
           contract  = args_contracts[args_contracts.size - 1 - j]
-          validator = @args_validators[args_contracts.size - 1 - j]
+          validator = args_validators[args_contracts.size - 1 - j]
 
           unless validator && validator[arg]
             return unless Contract.failure_callback(
@@ -80,7 +80,7 @@ module Contracts
                  method.send_to(this, *args, &blk)
                end
 
-      unless @ret_validator[result]
+      unless ret_validator[result]
         Contract.failure_callback(
           :arg          => result,
           :contract     => ret_contract,

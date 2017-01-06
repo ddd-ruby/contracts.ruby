@@ -20,7 +20,7 @@ class Contract < Contracts::Decorator
     make_validator(contract)[arg]
   end
 
-  attr_reader :args_contracts, :ret_contract, :klass, :method
+  attr_reader :args_contracts, :ret_contract, :klass, :method, :ret_validator, :args_validators
   def initialize(klass, method, *contracts)
     contracts = correct_contracts(contracts, method)
 
@@ -28,22 +28,12 @@ class Contract < Contracts::Decorator
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
     @ret_contract   = contracts[-1].values[0]
 
-    @args_validators = args_contracts.map do |contract|
-      Contract.make_validator(contract)
-    end
+    determine_has_proc_contract!
+    determine_has_options_contract!
 
-    @args_contract_index = args_contracts.index do |contract|
-      contract.is_a?(Contracts::Args)
-    end
-
-    @ret_validator = Contract.make_validator(ret_contract)
     @pattern_match = false
-
-    set_has_proc_contract!(args_contracts)
-    set_has_options_contract!(args_contracts)
-
-    @klass  = klass
-    @method = method
+    @klass         = klass
+    @method        = method
   end
 
   def to_s
@@ -90,11 +80,27 @@ class Contract < Contracts::Decorator
     contracts
   end
 
-  def set_has_proc_contract!(args_contracts)
+  def args_contract_index
+    @args_contract_index ||= args_contracts.index do |contract|
+      contract.is_a?(Contracts::Args)
+    end
+  end
+
+  def args_validators
+    @args_validators ||= args_contracts.map do |contract|
+      Contract.make_validator(contract)
+    end
+  end
+
+  def ret_validator
+    @ret_validator ||= Contract.make_validator(ret_contract)
+  end
+
+  def determine_has_proc_contract!
     @has_proc_contract = kinda_proc?(args_contracts.last)
   end
 
-  def set_has_options_contract!(args_contracts)
+  def determine_has_options_contract!
     relevant_contract     = (@has_proc_contract ? args_contracts[-2] : args_contracts[-1])
     @has_options_contract = kinda_hash?(relevant_contract)
   end
@@ -121,7 +127,7 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_block!(args, blk)
     return false unless @has_proc_contract && !blk &&
-        (@args_contract_index || args.size < args_contracts.size)
+        (args_contract_index || args.size < args_contracts.size)
     args << nil
     true
   end
