@@ -22,56 +22,56 @@ module Contracts
   module Builtin
     # Check that an argument is +Numeric+.
     class Num
-      def self.valid? val
+      def self.valid?(val)
         val.is_a? Numeric
       end
     end
 
     # Check that an argument is a positive number.
     class Pos
-      def self.valid? val
+      def self.valid?(val)
         val && val.is_a?(Numeric) && val > 0
       end
     end
 
     # Check that an argument is a negative number.
     class Neg
-      def self.valid? val
+      def self.valid?(val)
         val && val.is_a?(Numeric) && val < 0
       end
     end
 
     # Check that an argument is an +Integer+.
     class Int
-      def self.valid? val
+      def self.valid?(val)
         val && val.is_a?(Integer)
       end
     end
 
     # Check that an argument is a natural number (includes zero).
     class Nat
-      def self.valid? val
+      def self.valid?(val)
         val && val.is_a?(Integer) && val >= 0
       end
     end
 
     # Check that an argument is a positive natural number (excludes zero).
     class NatPos
-      def self.valid? val
+      def self.valid?(val)
         val && val.is_a?(Integer) && val > 0
       end
     end
 
     # Passes for any argument.
     class Any
-      def self.valid? val
+      def self.valid?(val)
         true
       end
     end
 
     # Fails for any argument.
     class None
-      def self.valid? val
+      def self.valid?(val)
         false
       end
     end
@@ -334,7 +334,7 @@ module Contracts
     end
 
     class Bool
-      def self.valid? val
+      def self.valid?(val)
         val.is_a?(TrueClass) || val.is_a?(FalseClass)
       end
     end

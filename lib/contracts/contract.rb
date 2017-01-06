@@ -175,7 +175,7 @@ class Contract < Contracts::Decorator
   def maybe_append_options!(args, blk)
     return false unless @has_options_contract
     if @has_proc_contract &&
-      (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
+        (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
       args.insert(-2, {})
     elsif (args_contracts[-1].is_a?(Hash) || args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-1].is_a?(Hash)
       args << {}
