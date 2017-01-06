@@ -15,5 +15,5 @@ group :development do
 end
 
 group :test, :development do
-  gem "byebug"
+  gem "byebug", :platform => [:ruby_20, :ruby_21, :ruby_22, :ruby_23]
 end
