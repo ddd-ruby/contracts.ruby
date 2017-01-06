@@ -105,11 +105,8 @@ module Contracts
     end
 
     def check_contract(contract, value)
-      if contract.respond_to?(:valid?)
-        contract.valid?(value)
-      else
-        value.is_a?(contract)
-      end
+      return contract.valid?(value) if contract.respond_to?(:valid?)
+      value.is_a?(contract)
     rescue
       false
     end
