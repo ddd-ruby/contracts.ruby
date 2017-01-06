@@ -6,8 +6,8 @@
 # This class also provides useful callbacks and a validation method.
 class Contract < Contracts::Decorator
   extend Contracts::Validators
-  include Contracts::CallWith
   extend Contracts::FailureCallback
+  include Contracts::CallWith
 
   # Used to verify if an argument satisfies a contract.
   #
@@ -22,7 +22,7 @@ class Contract < Contracts::Decorator
 
   attr_reader :args_contracts, :ret_contract, :klass, :method, :ret_validator, :args_validators
   def initialize(klass, method, *contracts)
-    contracts = correct_contracts(contracts, method)
+    contracts = correct_ret_only_contract(contracts, method)
 
     # internally we just convert that return value syntax back to an array
     @args_contracts = contracts[0, contracts.size - 1] + contracts[-1].keys
@@ -66,7 +66,11 @@ class Contract < Contracts::Decorator
 
   private
 
-  def correct_contracts(contracts, method)
+  # BEFORE
+  # [Contracts::Builtin::Num]
+  # AFTER:
+  # [{nil=>Contracts::Builtin::Num}]
+  def correct_ret_only_contract(contracts, method)
     unless contracts.last.is_a?(Hash)
       unless contracts.one?
         raise %{
