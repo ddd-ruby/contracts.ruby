@@ -59,11 +59,9 @@ class Contract < Contracts::Decorator
     # == @has_options_contract
     last_contract         = args_contracts.last
     penultimate_contract  = args_contracts[-2]
-    @has_options_contract = if @has_proc_contract
-                              penultimate_contract.is_a?(Hash) || penultimate_contract.is_a?(Contracts::Builtin::KeywordArgs)
-                            else
-                              last_contract.is_a?(Hash) || last_contract.is_a?(Contracts::Builtin::KeywordArgs)
-                            end
+    relevant_contract     = (@has_proc_contract ? penultimate_contract : last_contract)
+    @has_options_contract = relevant_contract.is_a?(Hash) || relevant_contract.is_a?(Contracts::Builtin::KeywordArgs)
+
     # ===
 
     @klass  = klass
@@ -89,6 +87,24 @@ class Contract < Contracts::Decorator
     call_with(nil, *args, &blk)
   end
 
+  # mark contract as pattern matching contract
+  def pattern_match!
+    @pattern_match = true
+  end
+
+  # Used to determine if contract is a pattern matching contract
+  def pattern_match?
+    @pattern_match
+  end
+
+  # Used to determine type of failure exception this contract should raise in case of failure
+  def failure_exception
+    return PatternMatchingError if pattern_match?
+    ParamContractError
+  end
+
+  private
+
   # if we specified a proc in the contract but didn't pass one in,
   # it's possible we are going to pass in a block instead. So lets
   # append a nil to the list of args just so it doesn't fail.
@@ -107,29 +123,23 @@ class Contract < Contracts::Decorator
   # returns true if it appended nil
   def maybe_append_options!(args, blk)
     return false unless @has_options_contract
-    if @has_proc_contract &&
-        (args_contracts[-2].is_a?(Hash) || args_contracts[-2].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-2].is_a?(Hash)
+    if use_penultimate_contract?(args)
       args.insert(-2, {})
-    elsif (args_contracts[-1].is_a?(Hash) || args_contracts[-1].is_a?(Contracts::Builtin::KeywordArgs)) && !args[-1].is_a?(Hash)
+    elsif use_last_contract?(args)
       args << {}
     end
     true
   end
 
-  # Used to determine type of failure exception this contract should raise in case of failure
-  def failure_exception
-    return PatternMatchingError if pattern_match?
-    ParamContractError
+  def use_penultimate_contract?(args)
+    @has_proc_contract && kinda_hash?(args_contracts[-2]) && !args[-2].is_a?(Hash)
   end
 
-  # @private
-  # Used internally to mark contract as pattern matching contract
-  def pattern_match!
-    @pattern_match = true
+  def use_last_contract?(args)
+    kinda_hash?(args_contracts[-1]) && !args[-1].is_a?(Hash)
   end
 
-  # Used to determine if contract is a pattern matching contract
-  def pattern_match?
-    @pattern_match
+  def kinda_hash?(v)
+    v.is_a?(Hash) || v.is_a?(Contracts::Builtin::KeywordArgs)
   end
 end
