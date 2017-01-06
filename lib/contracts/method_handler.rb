@@ -3,12 +3,12 @@ module Contracts
   # Represents single such method
   class MethodHandler
     METHOD_REFERENCE_FACTORY = {
-      :class_methods => SingletonMethodReference,
+      :class_methods    => SingletonMethodReference,
       :instance_methods => MethodReference
     }.freeze
 
     RAW_METHOD_STRATEGY = {
-      :class_methods => lambda { |target, name| target.method(name) },
+      :class_methods    => lambda { |target, name| target.method(name) },
       :instance_methods => lambda { |target, name| target.instance_method(name) }
     }.freeze
 
@@ -18,9 +18,9 @@ module Contracts
     # @param [Bool] is_class_method
     # @param [Class] target - class that method got added to
     def initialize(method_name, is_class_method, target)
-      @method_name = method_name
+      @method_name     = method_name
       @is_class_method = is_class_method
-      @target = target
+      @target          = target
     end
 
     # Handles method addition
@@ -102,8 +102,8 @@ module Contracts
       return if ignore_decorators?
 
       # Those are required for instance_eval to be able to refer them
-      name = method_name
-      method_type = _method_type
+      name           = method_name
+      method_type    = _method_type
       current_engine = engine
 
       # We are gonna redefine original method here
@@ -126,8 +126,8 @@ module Contracts
         # If we run out of functions, we raise the last error, but
         # convert it to_contract_error.
         success = false
-        i = 0
-        result = nil
+        i       = 0
+        result  = nil
         expected_error = decorated_methods[0].failure_exception
 
         until success
@@ -135,7 +135,7 @@ module Contracts
           i += 1
           begin
             success = true
-            result = decorated_method.call_with(self, *args, &blk)
+            result  = decorated_method.call_with(self, *args, &blk)
           rescue expected_error => error
             success = false
             unless decorated_methods[i]
