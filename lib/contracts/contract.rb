@@ -68,15 +68,8 @@ class Contract < Contracts::Decorator
     @method = method
   end
 
-  def pretty_contract(c)
-    return c.name if c.is_a?(Class)
-    c.class.name
-  end
-
   def to_s
-    args = args_contracts.map { |c| pretty_contract(c) }.join(", ")
-    ret  = pretty_contract(ret_contract)
-    "#{args} => #{ret}".gsub("Contracts::Builtin::", "")
+    "#{args_contracts_to_s} => #{ret_contract_to_s}".gsub!("Contracts::Builtin::", "")
   end
 
   def [](*args, &blk)
@@ -104,6 +97,19 @@ class Contract < Contracts::Decorator
   end
 
   private
+
+  def args_contracts_to_s
+    args_contracts.map { |c| pretty_contract(c) }.join(", ")
+  end
+
+  def ret_contract_to_s
+    pretty_contract(ret_contract)
+  end
+
+  def pretty_contract(c)
+    return c.name if c.is_a?(Class)
+    c.class.name
+  end
 
   # if we specified a proc in the contract but didn't pass one in,
   # it's possible we are going to pass in a block instead. So lets
