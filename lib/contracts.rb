@@ -10,9 +10,10 @@ require "contracts/method_reference"
 require "contracts/support"
 require "contracts/engine"
 require "contracts/method_handler"
-require "contracts/validators"
-require "contracts/call_with"
 require "contracts/core"
+
+require "contracts/contract/call_with"
+require "contracts/contract/validators"
 require "contracts/contract"
 
 module Contracts
