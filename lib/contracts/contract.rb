@@ -4,11 +4,6 @@
 #   Contract [contract names] => return_value
 #
 # This class also provides useful callbacks and a validation method.
-#
-# For #make_validator and related logic see file
-# lib/contracts/validators.rb
-# For #call_with and related logic see file
-# lib/contracts/call_with.rb
 class Contract < Contracts::Decorator
   extend Contracts::Validators
   include Contracts::CallWith
