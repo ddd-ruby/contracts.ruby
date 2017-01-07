@@ -2,8 +2,6 @@ module Contracts
   module Engine
     # Represents class in question
     class Target
-      # Creates new instance of Target
-      #
       # @param [Class] target - class in question
       def initialize(target)
         @target = target
