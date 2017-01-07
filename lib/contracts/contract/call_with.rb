@@ -15,7 +15,7 @@ module Contracts
         arg       = args[i]
         validator = args_validators[i]
 
-        unless validator && validator[arg]
+        unless validator && validator.call(arg)
           return unless Contract.failure_callback(
             :arg          => arg,
             :contract     => contract,
