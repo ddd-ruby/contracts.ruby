@@ -214,7 +214,7 @@ product([1, 2, 3, "foo"])
 ### Another Product Function
 
 ```ruby
-Contract C::Args[C::Num] => C::Num
+Contract C::SplatArgs[C::Num] => C::Num
 def product(*vals)
   total = 1
   vals.each do |val|
@@ -224,13 +224,13 @@ def product(*vals)
 end
 ```
 
-This function uses varargs (`*args`) instead of an array. To make a contract on varargs, use the `Args` contract. It takes one contract as an argument and uses it to validate every element passed in through `*args`. So for example,
+This function uses varargs (`*args`) instead of an array. To make a contract on varargs, use the `SplatArgs` contract. It takes one contract as an argument and uses it to validate every element passed in through `*args`. So for example,
 
-`Args[Num]` means they should all be numbers.
+`SplatArgs[Num]` means they should all be numbers.
 
-`Args[Or[Num, String]]` means they should all be numbers or strings.
+`SplatArgs[Or[Num, String]]` means they should all be numbers or strings.
 
-`Args[Any]` means all arguments are allowed (`Any` is a contract that passes for any argument).
+`SplatArgs[Any]` means all arguments are allowed (`Any` is a contract that passes for any argument).
 
 ### Contracts On Arrays
 
@@ -598,7 +598,7 @@ Possible validator overrides:
 - `override_validator(Hash)` - e.g. `{ :a => C::Num, :b => String }`,
 - `override_validator(Range)` - e.g. `(1..10)`,
 - `override_validator(Regexp)` - e.g. `/foo/`,
-- `override_validator(Contracts::Args)` - e.g. `C::Args[C::Num]`,
+- `override_validator(Contracts::SplatArgs)` - e.g. `C::SplatArgs[C::Num]`,
 - `override_validator(Contracts::Func)` - e.g. `C::Func[C::Num => C::Num]`,
 - `override_validator(:valid)` - allows to override how contracts that respond to `:valid?` are handled,
 - `override_validator(:class)` - allows to override how class/module contract constants are handled,

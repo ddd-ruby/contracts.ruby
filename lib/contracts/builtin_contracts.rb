@@ -320,15 +320,23 @@ module Contracts
     # Used for <tt>*args</tt> (variadic functions). Takes a contract
     # and uses it to validate every element passed in
     # through <tt>*args</tt>.
-    # Example: <tt>Args[Or[String, Num]]</tt>
-    class Args < CallableClass
+    # Example: <tt>SplatArgs[Or[String, Num]]</tt>
+    class SplatArgs < CallableClass
       attr_reader :contract
       def initialize(contract)
         @contract = contract
       end
 
       def to_s
-        "Args[#{@contract}]"
+        "SplatArgs[#{@contract}]"
+      end
+    end
+
+    # for compatibility
+    class Args < SplatArgs
+      def initialize(contract)
+        puts "DEPRECATION WARNING: \nContract::Args was renamed to Contract::SplatArgs, please update your before the next major version"
+        @contract = contract
       end
     end
 

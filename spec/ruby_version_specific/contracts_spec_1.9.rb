@@ -1,5 +1,5 @@
 class GenericExample
-  Contract C::Args[String], C::Num => C::ArrayOf[String]
+  Contract C::SplatArgs[String], C::Num => C::ArrayOf[String]
   def splat_then_arg(*vals, n)
     vals.map { |v| v * n }
   end
@@ -19,6 +19,22 @@ RSpec.describe "Contracts:" do
   describe "Splat not last (or penultimate to block)" do
     it "should work with arg after splat" do
       expect { @o.splat_then_arg("hello", "world", 3) }.to_not raise_error
+    end
+  end
+
+
+  context "Contracts::Args" do
+    it "should print deprecation warning when used" do
+      expect{
+        klass = Class.new do
+          include Contracts::Core
+
+          Contract C::Num, C::Args[String] => C::ArrayOf[String]
+          def arg_then_splat(n, *vals)
+            vals.map { |v| v * n }
+          end
+        end
+      }.to output(Regexp.new("DEPRECATION WARNING")).to_stdout
     end
   end
 end

@@ -1,5 +1,5 @@
 class GenericExample
-  Contract String, C::Bool, C::Args[Symbol], Float, C::KeywordArgs[e: Range, f: C::Optional[C::Num], g: Symbol], Proc =>
+  Contract String, C::Bool, C::SplatArgs[Symbol], Float, C::KeywordArgs[e: Range, f: C::Optional[C::Num], g: Symbol], Proc =>
            [Proc, Hash, C::Maybe[C::Num], Range, Float, C::ArrayOf[Symbol], C::Bool, String]
   def complicated(a, b = true, *c, d, e:, f:2, **g, &h)
     h.call [h, g, f, e, d, c, b, a]

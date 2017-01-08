@@ -37,7 +37,7 @@ module Contracts
         end
       end,
 
-      Contracts::Args => lambda do |contract|
+      Contracts::SplatArgs => lambda do |contract|
         lambda do |arg|
           Contract.valid?(arg, contract.contract)
         end

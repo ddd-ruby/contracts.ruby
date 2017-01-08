@@ -1,5 +1,5 @@
 class GenericExample
-  Contract C::Args[String], { repeat: C::Maybe[C::Num] } => C::ArrayOf[String]
+  Contract C::SplatArgs[String], { repeat: C::Maybe[C::Num] } => C::ArrayOf[String]
   def splat_then_optional_named(*vals, repeat: 2)
     vals.map { |v| v * repeat }
   end

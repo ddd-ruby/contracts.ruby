@@ -161,20 +161,20 @@ class GenericExample
     block.call
   end
 
-  Contract C::Args[C::Num], C::Maybe[Proc] => C::Any
+  Contract C::SplatArgs[C::Num], C::Maybe[Proc] => C::Any
   def maybe_call(*vals, &block)
     block.call if block
     vals
   end
 
-  Contract C::Args[C::Num] => C::Num
+  Contract C::SplatArgs[C::Num] => C::Num
   def sum(*vals)
     vals.inject(0) do |acc, val|
       acc + val
     end
   end
 
-  Contract C::Args[C::Num], Proc => C::Num
+  Contract C::SplatArgs[C::Num], Proc => C::Num
   def with_partial_sums(*vals, &blk)
     sum = vals.inject(0) do |acc, val|
       blk[acc]
@@ -183,7 +183,7 @@ class GenericExample
     blk[sum]
   end
 
-  Contract C::Args[C::Num], C::Func[C::Num => C::Num] => C::Num
+  Contract C::SplatArgs[C::Num], C::Func[C::Num => C::Num] => C::Num
   def with_partial_sums_contracted(*vals, &blk)
     sum = vals.inject(0) do |acc, val|
       blk[acc]
@@ -193,7 +193,7 @@ class GenericExample
   end
 
   # Important to use different arg types or it falsely passes
-  Contract C::Num, C::Args[String] => C::ArrayOf[String]
+  Contract C::Num, C::SplatArgs[String] => C::ArrayOf[String]
   def arg_then_splat(n, *vals)
     vals.map { |v| v * n }
   end

@@ -41,7 +41,7 @@ module Contracts
         (args.size - args_contract_index).times do |i|
           arg = args[args.size - 1 - i]
 
-          if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::Args)
+          if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::SplatArgs)
             splat_upper_index = i
           end
 
