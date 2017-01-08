@@ -10,7 +10,7 @@ module Contracts
       maybe_append_options!(args, blk)
 
       # Loop forward validating the arguments up to the splat (if there is one)
-      (args_contract_index || args.size).times do |i|
+      (splat_args_contract_index || args.size).times do |i|
         contract  = args_contracts[i]
         arg       = args[i]
         validator = args_validators[i]
@@ -36,9 +36,9 @@ module Contracts
       # If there is a splat loop backwards to the lower index of the splat
       # Once we hit the splat in this direction set its upper index
       # Keep validating but use this upper index to get the splat validator.
-      if args_contract_index
-        splat_upper_index = args_contract_index
-        (args.size - args_contract_index).times do |i|
+      if splat_args_contract_index
+        splat_upper_index = splat_args_contract_index
+        (args.size - splat_args_contract_index).times do |i|
           arg = args[args.size - 1 - i]
 
           if args_contracts[args_contracts.size - 1 - i].is_a?(Contracts::SplatArgs)
@@ -109,7 +109,7 @@ module Contracts
     # returns true if it appended nil
     def maybe_append_block!(args, blk)
       return false unless @has_proc_contract && !blk &&
-          (args_contract_index || args.size < args_contracts.size)
+          (splat_args_contract_index || args.size < args_contracts.size)
       args << nil
       true
     end

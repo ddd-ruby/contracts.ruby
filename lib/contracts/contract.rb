@@ -84,8 +84,8 @@ class Contract < Contracts::Decorator
     contracts
   end
 
-  def args_contract_index
-    @args_contract_index ||= args_contracts.index do |contract|
+  def splat_args_contract_index
+    @splat_args_contract_index ||= args_contracts.index do |contract|
       contract.is_a?(Contracts::SplatArgs)
     end
   end
