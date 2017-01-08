@@ -50,7 +50,7 @@ module Contracts
           contract  = args_contracts[args_contracts.size - 1 - j]
           validator = args_validators[args_contracts.size - 1 - j]
 
-          unless validator && validator[arg]
+          unless validator && validator.call(arg)
             return unless Contract.failure_callback(
               :arg          => arg,
               :contract     => contract,
@@ -80,7 +80,7 @@ module Contracts
                  method.send_to(this, *args, &blk)
                end
 
-      unless ret_validator[result]
+      unless ret_validator.call(result)
         Contract.failure_callback(
           :arg          => result,
           :contract     => ret_contract,
@@ -117,7 +117,7 @@ module Contracts
     # Same thing for when we have named params but didn't pass any in.
     # returns true if it appended nil
     def maybe_append_options!(args, blk)
-      return false unless @has_options_contract
+      return unless @has_options_contract
       if use_penultimate_contract?(args)
         args.insert(-2, {})
       elsif use_last_contract?(args)
