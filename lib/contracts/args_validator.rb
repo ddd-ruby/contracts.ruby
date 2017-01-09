@@ -14,25 +14,7 @@ module Contracts
     # may change the `args` param
     def validate_args_before_splat!(args)
       (splat_args_contract_index || args.size).times do |i|
-        contract  = args_contracts[i]
-        arg       = args[i]
-        validator = args_validators[i]
-
-        unless validator && validator.call(arg)
-          throw :return, "silent_failure" unless Contract.failure_callback(
-            :arg          => arg,
-            :contract     => contract,
-            :class        => klass,
-            :method       => method,
-            :contracts    => contracts,
-            :arg_pos      => i + 1,
-            :total_args   => args.size,
-            :return_value => false
-          )
-        end
-
-        next unless contract.is_a?(Contracts::Func)
-        args[i] = Contract.new(klass, arg, *contract.contracts)
+        validate!(args, i)
       end
     end
 
@@ -74,6 +56,32 @@ module Contracts
         next unless contract.is_a?(Contracts::Func)
         args[args.size - 1 - i] = Contract.new(klass, arg, *contract.contracts)
       end
+    end
+
+    private
+
+    def validate!(args, index)
+      arg       = args[index]
+      contract  = args_contracts[index]
+      validator = args_validators[index]
+      fail_if_invalid(validator, arg, index + 1, args.size, contract)
+
+      return unless contract.is_a?(Contracts::Func)
+      args[index] = Contract.new(klass, arg, *contract.contracts)
+    end
+
+    def fail_if_invalid(validator, arg, arg_pos, args_size, contract)
+      return if validator && validator.call(arg)
+      throw :return, "silent_failure" unless Contract.failure_callback(
+        :arg          => arg,
+        :contract     => contract,
+        :class        => klass,
+        :method       => method,
+        :contracts    => contracts,
+        :arg_pos      => arg_pos,
+        :total_args   => args_size,
+        :return_value => false
+      )
     end
   end
 end
