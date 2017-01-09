@@ -1,5 +1,19 @@
 ## v0.15.0
 
+- Breaking Change: compatibility shifted to > Ruby 2.1
+- Refactoring: CallWith module is now more comprehensible
+- Enhancement: Badges: Codeclimate / Code coverage
+- Enhancement: more Rubocop cops enabled
+- Enhancement: extract Contract class to contracts/contract.rb
+- Enhancement: extract FailureCallback module  to contracts/contract/failure_callback.rb
+- Enhancement: better ErrorFormatter for KeywordArgs contract
+- Enhancement: many loops / conditional branches / old comments are improved / simplified
+- Enhancement: rename Contracts::Args -> C::SplatArgs for clearer intention (with deprecation warning)
+- Enhancement: remove Cucumber tests, because they are slow and inflexible
+- Enhancement: Rspec helper cleanup
+- Enhancement: Rspec tests with much less noise / no warnings
+
+
 ## v0.14.0
 - Enhancement: Add StrictHash contract - [Fyodor](https://github.com/cbrwizard) [#236](https://github.com/egonSchiele/contracts.ruby/pull/236)
 - Bugfix: dont fail if something other than a hash is passed to a KeywordArgs - [Dan Padilha](https://github.com/dpad) [#234](https://github.com/egonSchiele/contracts.ruby/pull/234)
