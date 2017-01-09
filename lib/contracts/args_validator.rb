@@ -1,13 +1,13 @@
 module Contracts
   class ArgsValidator
     attr_accessor :splat_args_contract_index, :klass, :method, :contracts, :args_contracts, :args_validators
-    def initialize(splat_args_contract_index:, klass:, method:, contracts:, args_contracts:, args_validators:)
-      @splat_args_contract_index = splat_args_contract_index
-      @klass                     = klass
-      @method                    = method
-      @contracts                 = contracts
-      @args_contracts            = args_contracts
-      @args_validators           = args_validators
+    def initialize(opts)
+      @splat_args_contract_index = opts.fetch(:splat_args_contract_index)
+      @klass                     = opts.fetch(:klass)
+      @method                    = opts.fetch(:method)
+      @contracts                 = opts.fetch(:contracts)
+      @args_contracts            = opts.fetch(:args_contracts)
+      @args_validators           = opts.fetch(:args_validators)
     end
 
     # Loop forward validating the arguments up to the splat (if there is one)
