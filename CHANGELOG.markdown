@@ -12,6 +12,8 @@
 - Enhancement: remove Cucumber tests, because they are slow and inflexible
 - Enhancement: Rspec helper cleanup
 - Enhancement: Rspec tests with much less noise / no warnings
+- Code Diff: `git diff 8889f13..03e9c56`
+- https://github.com/ddd-ruby/contracts.ruby/compare/8889f13...03e9c56
 
 
 ## v0.14.0
