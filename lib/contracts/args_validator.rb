@@ -40,18 +40,7 @@ module Contracts
         contract  = args_contracts[args_contracts.size - 1 - j]
         validator = args_validators[args_contracts.size - 1 - j]
 
-        unless validator && validator.call(arg)
-          throw :return, "silent_failure" unless Contract.failure_callback(
-            :arg          => arg,
-            :contract     => contract,
-            :class        => klass,
-            :method       => method,
-            :contracts    => contracts,
-            :arg_pos      => i-1,
-            :total_args   => args.size,
-            :return_value => false
-          )
-        end
+        fail_if_invalid(validator, arg, i - 1, args.size, contract)
 
         next unless contract.is_a?(Contracts::Func)
         args[args.size - 1 - i] = Contract.new(klass, arg, *contract.contracts)
