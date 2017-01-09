@@ -473,9 +473,17 @@ RSpec.describe "Contracts:" do
         @o.with_partial_sums(1, 2, 3)
       end.to raise_error(ContractError, /Actual: nil/)
 
-      expect do
-        @o.with_partial_sums(1, 2, 3, lambda { |x| x })
-      end.to raise_error(ContractError, /Actual: nil/)
+      to_call = lambda {
+        expect do
+          # because lambda is not a valid &block, it is considered to belong to the splat argument, and raises for num contract!
+          @o.with_partial_sums(1, 2, 3, lambda { |x| x })
+        end
+      }
+      to_call.call.to raise_error(ContractError, /Contract violation for argument 4 of 5/)
+      to_call.call.to raise_error(ContractError, /Actual: #<Proc/)
+      to_call.call.to raise_error(ContractError, Regexp.new("Expected: \\(SplatArgs\\[Contracts::Builtin::Num\\]\\)"))
+
+
     end
 
     context "when block has Func contract" do

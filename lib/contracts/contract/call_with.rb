@@ -95,23 +95,21 @@ module Contracts
 
     # Explicitly append options={} if Hash contract is present
     # Same thing for when we have named params but didn't pass any in.
-    # returns true if it appended nil
+    # returns true if it appended {}
     def maybe_append_options!(args, blk)
       return unless @has_options_contract
-      if use_penultimate_contract?(args)
-        args.insert(-2, {})
-      elsif use_last_contract?(args)
-        args << {}
-      end
-      true
+      return args.insert(-2, {}) if use_penultimate_contract?(args)
+      return args.insert(-1, {}) if use_last_contract?(args)
     end
 
     def use_last_contract?(args)
-      kinda_hash?(args_contracts[-1]) && !args[-1].is_a?(Hash)
+      return if args[-1].is_a?(Hash)
+      kinda_hash?(args_contracts[-1])
     end
 
     def use_penultimate_contract?(args)
-      kinda_hash?(args_contracts[-2]) && !args[-2].is_a?(Hash)
+      return if args[-2].is_a?(Hash)
+      kinda_hash?(args_contracts[-2])
     end
   end # end CallWith
 end
