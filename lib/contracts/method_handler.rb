@@ -118,38 +118,33 @@ module Contracts
 
         # Fetch decorated methods out of the contracts engine
         decorated_methods = engine.decorated_methods_for(method_type, name)
+        expected_error    = decorated_methods[0].failure_exception
+        error_to_return   = nil
+        result            = nil
+        success           = nil
+
         # This adds support for overloading methods. Here we go
         # through each method and call it with the arguments.
         # If we get a failure_exception, we move to the next
         # function. Otherwise we return the result.
         # If we run out of functions, we raise the last error, but
         # convert it to_contract_error.
-        success = false
-        i       = 0
-        result  = nil
-        expected_error = decorated_methods[0].failure_exception
-
-        until success
-          decorated_method = decorated_methods[i]
-
+        decorated_methods.any? do |decorated_method|
           begin
+            result = decorated_method.call_with(self, *args, &blk)
             success = true
-            result  = decorated_method.call_with(self, *args, &blk)
           rescue expected_error => error
-            success = false
-            i += 1
-            unless decorated_methods[i]
-              begin
-                ::Contract.failure_callback(error.data, false)
-              rescue expected_error => final_error
-                raise final_error.to_contract_error
-              end
-            end
+            error_to_return = error
+            nil
           end
         end
+        return result if success
 
-        # Return the result of successfully called method
-        result
+        begin
+          ::Contract.failure_callback(error_to_return.data, false)
+        rescue expected_error
+          raise error_to_return.to_contract_error
+        end
       end
     end
 
