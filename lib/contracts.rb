@@ -12,6 +12,7 @@ require "contracts/engine"
 require "contracts/method_handler"
 require "contracts/core"
 
+require "contracts/args_validator"
 require "contracts/contract/call_with"
 require "contracts/contract/validators"
 require "contracts/contract/failure_callback"
