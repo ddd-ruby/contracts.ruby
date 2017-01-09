@@ -15,9 +15,7 @@ module Contracts
         args_validator.validate_splat_args_and_after!(args)
       end
 
-      # If we put the block into args for validating, restore the args
-      # OR if we added a fake nil at the end because a block wasn't passed in.
-      args.slice!(-1) if blk || nil_block_appended
+      restore_args!(args, blk, nil_block_appended)
       result = execute_args(this, args, blk)
 
       validate_result(result)
@@ -36,6 +34,13 @@ module Contracts
         args_validators: args_validators,
         splat_args_contract_index: splat_args_contract_index
       )
+    end
+
+    # Restore the args
+    # - if we put the block into args for validating
+    # - OR if we added a fake nil at the end because a block wasn't passed in.
+    def restore_args!(args, blk, nil_block_appended)
+      args.slice!(-1) if blk || nil_block_appended
     end
 
     def validate_result(result)
@@ -77,10 +82,15 @@ module Contracts
     # before throwing a "mismatched # of args" error.
     # returns true if it appended nil
     def maybe_append_block!(args, blk)
-      return false unless @has_proc_contract && !blk &&
-          (splat_args_contract_index || args.size < args_contracts.size)
+      return unless @has_proc_contract && !blk && needs_more_args?(args)
       args << nil
       true
+    end
+
+    def needs_more_args?(args)
+      is_splat           = splat_args_contract_index
+      more_args_expected = args.size < args_contracts.size
+      (is_splat || more_args_expected)
     end
 
     # Explicitly append options={} if Hash contract is present
