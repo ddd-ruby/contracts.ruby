@@ -24,19 +24,26 @@ module Contracts
     def validate_splat_args_and_after!(args)
       return unless splat_args_contract_index
       from, count = splat_range(args)
+      validate_splat(args, from, count)
 
-      # splat arguments
+      splat_upper_bound = from + count
+      return if splat_upper_bound == args.size
+
+      validate_rest(args, from, splat_upper_bound)
+    end
+
+    private
+
+    def validate_splat(args, from, count)
       args.slice(from, count).each_with_index do |_arg, index|
         arg_index = from + index
         contract  = args_contracts[from]
         validator = args_validators[from]
         validate!(args, arg_index, contract, validator)
       end
+    end
 
-      splat_upper_bound = from + count
-      return if splat_upper_bound == args.size
-
-      # after splat arguments
+    def validate_rest(args, from, splat_upper_bound)
       args[splat_upper_bound..-1].each_with_index do |_arg, index|
         arg_index      = splat_upper_bound + index
         contract_index = from + index + 1
@@ -61,8 +68,6 @@ module Contracts
 
       [splat_args_contract_index, in_splat]
     end
-
-    private
 
     def validate!(args, index, contract = nil, validator = nil)
       arg       = args[index]
