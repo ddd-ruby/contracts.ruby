@@ -15,6 +15,12 @@ module Contracts
         args_validator.validate_splat_args_and_after!(args)
       end
 
+      handle_result(this, args, blk, nil_block_appended)
+    end
+
+    private
+
+    def handle_result(this, args, blk, nil_block_appended)
       restore_args!(args, blk, nil_block_appended)
       result = execute_args(this, args, blk)
 
@@ -22,8 +28,6 @@ module Contracts
       verify_invariants!(this)
       wrap_result_if_func(result)
     end
-
-    private
 
     def args_validator
       @args_validator ||= Contracts::ArgsValidator.new(
