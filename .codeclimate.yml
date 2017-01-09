@@ -2,6 +2,7 @@ engines:
   rubocop:
     enabled: true
     exclude_fingerprints:
+    - a6b358051ceb7af2b92a34028cd85b0e
 
   bundler-audit:
     enabled: false
