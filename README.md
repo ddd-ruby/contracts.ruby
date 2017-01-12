@@ -1,5 +1,6 @@
 # contracts.ruby
 [![Build Status](https://travis-ci.org/ddd-ruby/contracts.ruby.png)](https://travis-ci.org/ddd-ruby/contracts.ruby)
+[![Gem Version](https://badge.fury.io/rb/contracts-lite.png)](http://badge.fury.io/rb/contracts-lite)
 [![Code Climate](https://codeclimate.com/github/ddd-ruby/contracts.ruby/badges/gpa.svg)](https://codeclimate.com/github/ddd-ruby/contracts.ruby)
 [![codecov](https://codecov.io/gh/ddd-ruby/contracts.ruby/branch/master/graph/badge.svg)](https://codecov.io/gh/ddd-ruby/contracts.ruby)
 [![Dependency Status](https://gemnasium.com/ddd-ruby/contracts.ruby.png)](https://gemnasium.com/ddd-ruby/contracts.ruby)
