@@ -102,50 +102,64 @@ module Contracts
       return if ignore_decorators?
 
       # Those are required for instance_eval to be able to refer them
+      method_handler = self
       name           = method_name
       method_type    = _method_type
       current_engine = engine
 
       # We are gonna redefine original method here
       method_reference.make_definition(target) do |*args, &blk|
-        engine = current_engine.nearest_decorated_ancestor
+        method_handler.send(:execute_on_target,
+                            self,
+                            name,
+                            method_type,
+                            current_engine,
+                            *args,
+                            &blk)
+      end
+    end
 
-        # If we weren't able to find any ancestor that has decorated methods
-        # FIXME : this looks like untested code (commenting it out doesn't make specs red)
-        unless engine
-          raise "Couldn't find decorator for method " + self.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
-        end
+    def execute_on_target(obj, name, method_type, current_engine, *args, &blk)
+      engine = current_engine.nearest_decorated_ancestor
+      handle_missing_ancestor_with_decorated_methods(engine, obj, name)
 
-        # Fetch decorated methods out of the contracts engine
-        decorated_methods = engine.decorated_methods_for(method_type, name)
-        expected_error    = decorated_methods[0].failure_exception
-        error_to_return   = nil
-        result            = nil
-        success           = nil
+      # Fetch decorated methods out of the contracts engine
+      decorated_methods = engine.decorated_methods_for(method_type, name)
+      expected_error    = decorated_methods[0].failure_exception
+      error_to_return   = nil
+      result            = nil
+      success           = nil
 
-        # This adds support for overloading methods. Here we go
-        # through each method and call it with the arguments.
-        # If we get a failure_exception, we move to the next
-        # function. Otherwise we return the result.
-        # If we run out of functions, we raise the last error, but
-        # convert it to_contract_error.
-        decorated_methods.any? do |decorated_method|
-          begin
-            result = decorated_method.call_with(self, *args, &blk)
-            success = true
-          rescue expected_error => error
-            error_to_return = error
-            nil
-          end
-        end
-        return result if success
-
+      # This adds support for overloading methods. Here we go
+      # through each method and call it with the arguments.
+      # If we get a failure_exception, we move to the next
+      # function. Otherwise we return the result.
+      # If we run out of functions, we raise the last error, but
+      # convert it to_contract_error.
+      decorated_methods.any? do |decorated_method|
         begin
-          ::Contract.failure_callback(error_to_return.data, false)
-        rescue expected_error
-          raise error_to_return.to_contract_error
+          result = decorated_method.call_with(obj, *args, &blk)
+          success = true
+        rescue expected_error => error
+          error_to_return = error
+          nil
         end
       end
+      return result if success
+      return_error_to_return(error_to_return, expected_error)
+    end
+
+    # If we weren't able to find any ancestor that has decorated methods
+    # FIXME : this looks like untested code (commenting it out doesn't make specs red)
+    def handle_missing_ancestor_with_decorated_methods(engine, obj, name)
+      return if engine
+      raise "Couldn't find decorator for method " + obj.class.name + ":#{name}.\nDoes this method look correct to you? If you are using contracts from rspec, rspec wraps classes in it's own class.\nLook at the specs for contracts.ruby as an example of how to write contracts in this case."
+    end
+
+    def return_error_to_return(error_to_return, expected_error)
+      ::Contract.failure_callback(error_to_return.data, false)
+    rescue expected_error
+      raise error_to_return.to_contract_error
     end
 
     def validate_decorators!
