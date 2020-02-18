@@ -4,7 +4,7 @@ RSpec.describe "Contracts::ErrorFormatters" do
   end
 
   describe "self.class_for" do
-    let(:keywordargs_contract) { C::KeywordArgs[:name => String, :age => Fixnum] }
+    let(:keywordargs_contract) { C::KeywordArgs[:name => String, :age => Integer] }
     let(:other_contract) { [C::Num, C::Num, C::Num] }
 
     it "returns KeywordArgsErrorFormatter for KeywordArgs contract" do
@@ -29,14 +29,14 @@ RSpec.describe "Contracts::ErrorFormatters" do
     end
   end
 
-  if ruby_version > 1.8
+  if ruby_version > 1.8 and ruby_version < 2.6
     describe "self.failure_msg" do
       it "includes normal information" do
         msg = %{Contract violation for argument 1 of 1:
-                              Expected: (KeywordArgs[{:name=>String, :age=>Fixnum}])
+                              Expected: (KeywordArgs[{:name=>String, :age=>Integer}])
                               Actual: {:age=>"2", :invalid_third=>1}
                               Missing Contract: {:invalid_third=>1}
-                              Invalid Args: [{:age=>"2", :contract=>Fixnum}]
+                              Invalid Args: [{:age=>"2", :contract=>Integer}]
                               Missing Args: {:name=>String}
                               Value guarded in: GenericExample::simple_keywordargs
                               With Contract: KeywordArgs => NilClass}
@@ -52,7 +52,7 @@ RSpec.describe "Contracts::ErrorFormatters" do
       end
 
       it "includes Invalid Args information" do
-        fails %{Invalid Args: [{:age=>"2", :contract=>Fixnum}]} do
+        fails %{Invalid Args: [{:age=>"2", :contract=>Integer}]} do
           @o.simple_keywordargs(:age => "2", :invalid_third => 1)
         end
       end

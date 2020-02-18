@@ -15,6 +15,6 @@ group :development do
 end
 
 group :test, :development do
-  gem "byebug", :platform => [:ruby_20, :ruby_21, :ruby_22, :ruby_23]
+  gem "byebug", :platform => [:ruby_20, :ruby_21, :ruby_22, :ruby_23, :ruby_24, :ruby_25]
   gem "rake"
 end
